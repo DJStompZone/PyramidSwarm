@@ -117,8 +117,6 @@ PyramidSWARM can be deployed on various cloud platforms, giving you access to po
 
 Many platforms offer GPU rental services that allow you to run GPU-accelerated workloads on virtual machines. You can deploy **PyramidSWARM** on these platforms to leverage high-performance GPUs.
 
-#### Steps
-
 1. **Create a Docker Image**:
    - Build your Docker image locally using the existing Dockerfiles. Tag the image appropriately.
 
@@ -155,8 +153,6 @@ Many platforms offer GPU rental services that allow you to run GPU-accelerated w
 ### 2. Deploying Using a Container Hosting Service
 
 For more structured deployments and scaling, you can host your Docker images on a container hosting service such as **AWS ECR**, **Google Cloud Container Registry**, **Azure Container Registry**, or another similar service.
-
-#### Steps
 
 1. **Set Up a Container Registry**:
    - Choose a registry service (AWS ECR, Google Cloud, etc.) and create a repository for your Docker image.
