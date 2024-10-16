@@ -1,0 +1,118 @@
+version: '2'
+
+services:
+  gradio_frontend:
+    image: pytorch/pytorch:2.4.1-cuda12.4-cudnn9-runtime
+    container_name: gradio_frontend
+    build:
+      context: ./gradio
+    ports:
+      - "7860:7860"
+    networks:
+      - ai_network
+    volumes:
+      - ./gradio:/app
+    environment:
+      - ROLE=frontend
+    depends_on:
+      - master
+      - redis
+    cpu_shares: 1024
+    mem_limit: 4g
+
+  master:
+    image: pytorch/pytorch:2.4.1-cuda12.4-cudnn9-runtime
+    container_name: inference_master
+    build:
+      context: ./master
+    ports:
+      - "5000:5000"
+    networks:
+      - ai_network
+    volumes:
+      - ./master:/app
+    environment:
+      - ROLE=master
+    depends_on:
+      - slave1
+      - slave2
+      - slave3
+      - slave4
+    cpu_shares: 1024
+    mem_limit: 4g
+
+  slave1:
+    image: pytorch/pytorch:2.4.1-cuda12.4-cudnn9-runtime
+    container_name: inference_slave1
+    build:
+      context: ./slave
+    networks:
+      - ai_network
+    volumes:
+      - ./slave:/app
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - ROLE=slave
+      - WORKER_NAME=slave1
+    cpu_shares: 512
+    mem_limit: 2g
+
+  slave2:
+    image: pytorch/pytorch:2.4.1-cuda12.4-cudnn9-runtime
+    container_name: inference_slave2
+    build:
+      context: ./slave
+    networks:
+      - ai_network
+    volumes:
+      - ./slave:/app
+    environment:
+      - CUDA_VISIBLE_DEVICES=1
+      - ROLE=slave
+      - WORKER_NAME=slave2
+    cpu_shares: 512
+    mem_limit: 2g
+
+  slave3:
+    image: pytorch/pytorch:2.4.1-cuda12.4-cudnn9-runtime
+    container_name: inference_slave3
+    build:
+      context: ./slave
+    networks:
+      - ai_network
+    volumes:
+      - ./slave:/app
+    environment:
+      - CUDA_VISIBLE_DEVICES=2
+      - ROLE=slave
+      - WORKER_NAME=slave3
+    cpu_shares: 512
+    mem_limit: 2g
+
+  slave4:
+    image: pytorch/pytorch:2.4.1-cuda12.4-cudnn9-runtime
+    container_name: inference_slave4
+    build:
+      context: ./slave
+    networks:
+      - ai_network
+    volumes:
+      - ./slave:/app
+    environment:
+      - CUDA_VISIBLE_DEVICES=3
+      - ROLE=slave
+      - WORKER_NAME=slave4
+    cpu_shares: 512
+    mem_limit: 2g
+
+  redis:
+    image: redis:7.4.1-bookworm
+    container_name: redis
+    networks:
+      - ai_network
+    ports:
+      - "6379:6379"
+
+networks:
+  ai_network:
+    driver: bridge

@@ -1,0 +1,4 @@
+torch>=2.0.0
+flask>=2.0.2
+redis>=4.0.2
+mutagen>=1.47.0
